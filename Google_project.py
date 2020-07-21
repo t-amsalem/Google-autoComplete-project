@@ -51,7 +51,7 @@ class AutoCompleteData:
     def replace_char(self, word):
         for char in word:
             for i in range(32, 67):
-                if word.replace(char, char(i)) in data.keys():
+                if word.replace(char, chr(i)) in data.keys():
                     return i - 32
         return -1
 
@@ -66,27 +66,29 @@ class AutoCompleteData:
     def add_missed_char(self, word):
         for char in word:
             for i in range(32, 67):
-                if word.replace(char, char + char(i)) in data.keys():
+                if word.replace(char, char + chr(i)) in data.keys():
                     return i - 32
         return -1
 
 
-    def get_score(self, word):
-
-        if self.replace_char(word) != -1:
-            index = self.replace_char(word)
-            if index < 6:
-                self.score -= (5 - index % 5)
-            else:
-                self.score -= 1
-
-        else:
-            if self.delete_Unnecessary_char(word) != -1 or self.add_missed_char(word) != -1:
-                index = self.delete_Unnecessary_char(word)
-                if index < 5:
-                    self.score -= (10 - index % 5)
+    def get_score(self, sentence):
+        sentence = sentence.split()
+        for word in sentence:
+            if self.replace_char(word) != -1:
+                index = self.replace_char(word)
+                if index < 6:
+                    self.score -= (5 - index % 5)
                 else:
-                    self.score -= 2
-        else:
-            self.score = len(word) * 2
+                    self.score -= 1
+
+            elif self.delete_Unnecessary_char(word) != -1 or self.add_missed_char(word) != -1:
+                    index = self.delete_Unnecessary_char(word)
+                    if index < 5:
+                        self.score -= (10 - index % 5)
+                    else:
+                        self.score -= 2
+            else:
+                self.score += len(word) * 2
+
+            self.score += (sentence.size() - 1) * 2
 
