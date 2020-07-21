@@ -33,7 +33,13 @@ def read_file():
 
 
 def get_best_k_completions(prefix):
+    info = []
+    info.append()
     return List[AutoCompleteData]
+
+
+def get_Data_at_key(key):
+    return list(sent_dict.keys())[list(sent_dict.values()).index(data[key])]
 
 
 class AutoCompleteData:
@@ -43,8 +49,23 @@ class AutoCompleteData:
         self.offset = offset
         self.score = score
 
-    def get_completed_sentence(self, ):
+
+# return the sentence with the high score
+    def get_completed_sentence(self, key):
+        result = get_Data_at_key(key)
+        max_score = 0
+        sent_index = 0
+        for sentence in result:
+            score = self.get_score(sentence)
+            if score > max_score:
+                max_score = score
+                sent_index = result.index(sentence)
+
+        return result[sent_index]
+
+
     def get_source_text(self, ):
+
     def get_offset(self, ):
 
 
@@ -91,4 +112,5 @@ class AutoCompleteData:
                 self.score += len(word) * 2
 
             self.score += (sentence.size() - 1) * 2
+            return self.score
 
