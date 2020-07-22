@@ -100,27 +100,6 @@ def get_sentence_score(sentence):
 #     return result[sent_index]
 #
 #
-# def get_sentence_score(sentence):
-#     sentence = sentence.split()
-#     for word in sentence:
-#         if sentence.replace_char(word) != -1:
-#             index = sentence.replace_char(word)
-#             if index < 6:
-#                 sentence.score -= (5 - index % 5)
-#             else:
-#                 sentence.score -= 1
-#
-#         elif sentence.delete_Unnecessary_char(word) != -1 or sentence.add_missed_char(word) != -1:
-#             index = sentence.delete_Unnecessary_char(word)
-#             if index < 5:
-#                 sentence.score -= (10 - index % 5)
-#             else:
-#                 sentence.score -= 2
-#         else:
-#             sentence.score += len(word) * 2
-#
-#     sentence.score += (len(sentence) - 1) * 2
-#     return sentence.score
 
 
 def replace_char(word):
@@ -154,9 +133,13 @@ def add_missed_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
             if word.replace(char, char + i) in data.keys():
-                # return index + 1
+                score = 0
+                if index < 5:
+                    score -= 10 - index % 5
+                else:
+                    score -= 2
+                score += (len(word) - 1) * 2
                 return get_Data_at_key(word.replace(char, char + i))
-
     return -1
 
 
