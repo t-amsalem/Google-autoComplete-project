@@ -127,21 +127,26 @@ def replace_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
             if word.replace(char, i) in data.keys():
+                score = 0
                 if index < 6:
-                    score = (5 - index % 5)
+                    score -= (5 - index % 5)
                 else:
-                    score = 1
+                    score -= 1
                 score += (len(word) - 1) * 2
                 return get_Data_at_key(word.replace(char, i)), score
     return -1
 
 
 def delete_Unnecessary_char(word):
-    for char in word:
+    for index, char in enumerate(word):
         if word.replace(char, "") in data.keys():
-            # return word.index(char)
-            return get_Data_at_key(word.replace(char, ""))
-
+            score = 0
+            if index < 5:
+                score -= 10 - index % 5
+            else:
+                score -= 2
+            score += (len(word) - 1) * 2
+            return get_Data_at_key(word.replace(char, "")), score
     return -1
 
 
