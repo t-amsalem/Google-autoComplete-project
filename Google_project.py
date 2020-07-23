@@ -1,6 +1,9 @@
 from itertools import combinations
 from collections import defaultdict
 from string import ascii_lowercase
+import os
+
+
 sent_dict = {}
 bad_chars = [';', ':', '-', '!', '*', ',', '$', '@']
 data = defaultdict(set)
@@ -23,11 +26,14 @@ class AutoCompleteData:
         return self.score
 
 
-def read_file(file_name):
-    with open(file_name) as file:
-        sentences_list = file.read().split("\n")
-    for index1, item1 in enumerate(sentences_list):
-        sent_dict[index1] = AutoCompleteData(item1, file_name, index1)
+def read_file():
+    for root, dirs, files in os.walk("./my_files/python-3.8.4-docs-text/", topdown=True):
+        for file in files:
+            if file.endswith(".txt"):
+                with open(os.path.join(root, file), encoding="utf8") as my_file:
+                    sentences_list = my_file.read().split("\n")
+                    for index1, item1 in enumerate(sentences_list):
+                        sent_dict[index1] = AutoCompleteData(item1, file, index1)
 
 
 def init_data():
@@ -127,7 +133,7 @@ def add_missed_char(word):
 
 if __name__ == '__main__':
     print("Loading the files and preparing the system...")
-    read_file("about.txt")
+    read_file()
     init_data()
     text = input("The system is ready, Enter your text: ")
     while text != '#':
@@ -136,6 +142,6 @@ if __name__ == '__main__':
         print(f"There are {i} suggestions:")
         for index, item in enumerate(result):
             print(f'{index + 1}. {item.get_completed_sentence()} ({item.get_source_text()} {item.get_offset()})')
-            print(f'score: {item.score}')
+            # print(f'score: {item.score}')
         print(text)
         text = input()
