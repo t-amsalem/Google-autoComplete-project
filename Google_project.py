@@ -100,10 +100,7 @@ def replace_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
             if word.replace(char, i, 1) in data.keys():
-                if index < 5:
-                    score = 5 - index
-                else:
-                    score = 1
+                score = 5 - index if index < 5 else 1
                 score = (len(word) * 2) - score
                 return get_data_at_key(word.replace(char, i, 1)), score
     return [], 0
@@ -112,10 +109,7 @@ def replace_char(word):
 def delete_unnecessary_char(word):
     for index, char in enumerate(word):
         if word.replace(char, "", 1) in data.keys():
-            if index < 4:
-                score = 10 - 2 * index
-            else:
-                score = 2
+            score = (10 - 2 * index) if index < 4 else 2
             score = (len(word) * 2) - score
             return get_data_at_key(word.replace(char, "", 1)), score
     return [], 0
@@ -125,10 +119,7 @@ def add_missed_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
             if word.replace(char, char + i, 1) in data.keys():
-                if index < 4:
-                    score = 10 - 2 * index
-                else:
-                    score = 2
+                score = (10 - 2 * index) if index < 4 else 2
                 score = (len(word) * 2) - score
                 return get_data_at_key(word.replace(char, char + i, 1)), score
     return [], 0
@@ -172,5 +163,5 @@ class AutoCompleteData:
 # print_data(t)
 # print_data(data)
 init_data()
-a = AutoCompleteData("jki")
+a = AutoCompleteData("j")
 print(a.score)
