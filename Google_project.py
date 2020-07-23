@@ -18,14 +18,16 @@ best_sentences = {}
 data = defaultdict(set)
 
 
-def init_data(sentences_dict):
-    for sentence in sentences_dict.keys():
+def init_data():
+    for sentence in sentences_dict:
+    # for sentence in my_dict.keys():
         substr_list = [sentence[x:y] for x, y in combinations(range(len(sentence) + 1), r=2)]
         for substr in substr_list:
             for char in bad_chars:
                 substr = substr.replace(char, '')
             if not substr.startswith(" ") and not substr.endswith(" "):
                 data[substr.lower()].add(sentences_dict[sentence])
+                # data[substr.lower()].add(my_dict[sentence])
 
 
 def print_data(data):
@@ -39,6 +41,8 @@ def read_data(file_name):
     my_dict = {}
     for sent in data_sentences:
         my_dict[sent] = file_name
+    # init_data(my_dict)
+    print(my_dict)
     return my_dict
 
 
@@ -82,47 +86,51 @@ def get_five_best_sentences(prefix):
         return list(a)[:5]
 
 
-# def get_sentence_score(sentence):
-    # return sentences_dict[sentence]
+def get_sentence_score(sentence):
+    x = 0
+    if sentence in data.keys():
+        x = len(sentence) * 2
+    x1 = replace_char(sentence)[1]
+    x2 = delete_unnecessary_char(sentence)[1]
+    x3 = add_missed_char(sentence)[1]
+    return max(x, x1, x2, x3)
 
 
 def replace_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
-            if word.replace(char, i) in data.keys():
-                score = 0
-                if index < 6:
-                    score -= (5 - index % 5)
+            if word.replace(char, i, 1) in data.keys():
+                if index < 5:
+                    score = 5 - index
                 else:
-                    score -= 1
-                score += (len(word) - 1) * 2
-                return get_data_at_key(word.replace(char, i)), score
+                    score = 1
+                score = (len(word) * 2) - score
+                return get_data_at_key(word.replace(char, i, 1)), score
     return [], 0
 
 
 def delete_unnecessary_char(word):
     for index, char in enumerate(word):
-        if word.replace(char, "") in data.keys():
-            score = 0
-            if index < 5:
-                score -= (10 - index % 5)
+        if word.replace(char, "", 1) in data.keys():
+            if index < 4:
+                score = 10 - 2 * index
             else:
-                score -= 2
-            score += (len(word) - 1) * 2
-            return get_data_at_key(word.replace(char, "")), score
+                score = 2
+            score = (len(word) * 2) - score
+            return get_data_at_key(word.replace(char, "", 1)), score
     return [], 0
 
 
 def add_missed_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
-            if word.replace(char, char + i) in data.keys():
-                score = 0
-                if index < 5:
-                    score -= (10 - index % 5)
+            if word.replace(char, char + i, 1) in data.keys():
+                if index < 4:
+                    score = 10 - 2 * index
                 else:
-                    score -= 2
-                score += (len(word) * 2)
+                    score = 2
+                score = (len(word) * 2) - score
+                return get_data_at_key(word.replace(char, char + i, 1)), score
     return [], 0
 
 
@@ -130,8 +138,8 @@ class AutoCompleteData:
     def __init__(self, text_input):
         self.completed_sentence = text_input
         self.source_text = ""
-        self.offset = sentences_dict[text_input]
-        self.score = get_five_best_sentences(text_input)
+        self.offset = 0
+        self.score = get_sentence_score(text_input)
 
     def get_completed_sentence(self):
         return self.completed_sentence
@@ -146,22 +154,23 @@ class AutoCompleteData:
         return self.score
 
 
-# Tests:
-# init_data()
+# if __name__ == '__main__':
+#     print("Loading the files and preparing the system...")
+#     init_data()
+#     # read_data("data.txt")
+#     text = input("The system is ready, Enter your text: ")
+#     while text != '#':
+#         result = get_best_k_completions(text)
+#         i = len(result)
+#         print(f"There are {i} suggestions:")
+#         for index, item in enumerate(result):
+#             print(f'{index + 1}. {item.get_completed_sentence()} ({item.get_source_text()} {item.get_offset()})')
+#         print(text)
+#         text = input()
 
-if __name__ == '__main__':
-    print("Loading the files and preparing the system...")
-    init_data()
-    text = input("The system is ready, Enter your text: ")
-    while text != '#':
-        result = get_best_k_completions(text)
-        i = len(result)
-        print(f"There are {i} suggestions:")
-        for index, item in enumerate(result):
-            print(f'{index + 1}. {item.get_completed_sentence()} ({item.get_source_text()} {item.get_offset()})')
-        print(text)
-        text = input()
-
-t = read_data("data.txt")
+# t = read_data("data.txt")
 # print_data(t)
-print_data(data)
+# print_data(data)
+init_data()
+a = AutoCompleteData("jki")
+print(a.score)
