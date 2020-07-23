@@ -96,12 +96,12 @@ def replace_char(word):
             if word.replace(char, i, 1) in data.keys():
                 score = (5 - index) if index < 5 else 1
                 score = (len(word) * 2) - score
-                # result = get_data_at_key(word.replace(char, i, 1))
-                # for item in result:
-                #     item.score = score
-                # return result, score
-                return get_data_at_key(word.replace(char, i, 1)), score
-    return [], 0
+                for item in result:
+                    if item not in best_sen:
+                        item.score = score
+                return result
+                # return get_data_at_key(word.replace(char, i, 1)), score
+    # return [], 0
 
 
 def delete_unnecessary_char(word):
@@ -109,10 +109,6 @@ def delete_unnecessary_char(word):
         if word.replace(char, "", 1) in data.keys():
             score = (10 - 2 * index) if index < 4 else 2
             score = (len(word) * 2) - score
-            # result = get_data_at_key(word.replace(char, "", 1))
-            # for item in result:
-            #     item.score = score
-            # return result, score
             return get_data_at_key(word.replace(char, "", 1)), score
     return [], 0
 
@@ -123,10 +119,6 @@ def add_missed_char(word):
             if word.replace(char, char + i, 1) in data.keys():
                 score = (10 - 2 * index) if index < 4 else 2
                 score = (len(word) * 2) - score
-                # result = get_data_at_key(word.replace(char, char + i, 1))
-                # for item in result:
-                #     item.score = score
-                # return result, score
                 return get_data_at_key(word.replace(char, char + i, 1)), score
     return [], 0
 
@@ -142,6 +134,5 @@ if __name__ == '__main__':
         print(f"There are {i} suggestions:")
         for index, item in enumerate(result):
             print(f'{index + 1}. {item.get_completed_sentence()} ({item.get_source_text()} {item.get_offset()})')
-            # print(f'score: {item.score}')
         print(text)
         text = input()
