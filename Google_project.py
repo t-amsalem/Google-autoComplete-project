@@ -80,7 +80,7 @@ def get_sentence_score(sentence):
 
 
 def reduce_score(index):
-    return - 10 + 2 * (index - 1) if index < 4 else -2
+    return (-10) + 2 * (index - 1) if index < 4 else -2
 
 
 def replace_char(word):
@@ -145,4 +145,6 @@ if __name__ == '__main__':
 
 
 init_data()
-# a = AutoCompleteData("hello")
+a = AutoCompleteData("hello")
+print(a.get_completed_sentence())
+replace_char("kello")
