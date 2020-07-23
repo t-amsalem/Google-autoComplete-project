@@ -1,8 +1,6 @@
-import string
 from itertools import combinations
 from collections import defaultdict
 from string import ascii_lowercase
-import glob
 
 
 sent1 = "Hello big and beautiful world "
@@ -20,14 +18,12 @@ data = defaultdict(set)
 
 def init_data():
     for sentence in sentences_dict:
-    # for sentence in my_dict.keys():
         substr_list = [sentence[x:y] for x, y in combinations(range(len(sentence) + 1), r=2)]
         for substr in substr_list:
             for char in bad_chars:
                 substr = substr.replace(char, '')
             if not substr.startswith(" ") and not substr.endswith(" "):
                 data[substr.lower()].add(sentences_dict[sentence])
-                # data[substr.lower()].add(my_dict[sentence])
 
 
 def print_data(data):
@@ -41,17 +37,8 @@ def read_data(file_name):
     my_dict = {}
     for sent in data_sentences:
         my_dict[sent] = file_name
-    # init_data(my_dict)
     print(my_dict)
     return my_dict
-
-
-    # txt_files = "C:\Users\RENT\Documents\project_Google"
-    # for file in glob.glob(f"{txt_files}/*.txt"):
-    #     self.sentence_data += self.data_from_file(file)
-    #     with open(file, encoding="utf8") as f:
-    #         sentences = f.readlines()
-    #     return [x.translate(str.maketrans('', '', '\n' + string.punctuation)) for x in sentences]
 
 
 def get_best_k_completions(prefix):
@@ -63,9 +50,8 @@ def get_best_k_completions(prefix):
 
 
 def get_data_at_key(key):
-    key = key.lower()
     sentences = []
-    for k in data[key]:
+    for k in data[key.lower()]:
         sentences.append(list(sentences_dict.keys())[k])
     return sorted(sentences)
 
@@ -90,18 +76,20 @@ def get_sentence_score(sentence):
     x = 0
     if sentence in data.keys():
         x = len(sentence) * 2
-    x1 = replace_char(sentence)[1]
-    x2 = delete_unnecessary_char(sentence)[1]
-    x3 = add_missed_char(sentence)[1]
-    return max(x, x1, x2, x3)
+    return max(x, replace_char(sentence)[1], delete_unnecessary_char(sentence)[1], add_missed_char(sentence)[1])
+
+
+def reduce_score(index):
+    return - 10 + 2 * (index - 1) if index < 4 else -2
 
 
 def replace_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
             if word.replace(char, i, 1) in data.keys():
-                score = 5 - index if index < 5 else 1
-                score = (len(word) * 2) - score
+                # score = 5 - index if index < 5 else 1
+                # score = (len(word) * 2) - score
+                score = (len(word) * 2) - (reduce_score(index) // 2)
                 return get_data_at_key(word.replace(char, i, 1)), score
     return [], 0
 
@@ -109,8 +97,9 @@ def replace_char(word):
 def delete_unnecessary_char(word):
     for index, char in enumerate(word):
         if word.replace(char, "", 1) in data.keys():
-            score = (10 - 2 * index) if index < 4 else 2
-            score = (len(word) * 2) - score
+            # score = (10 - 2 * index) if index < 4 else 2
+            # score = (len(word) * 2) - score
+            score = (len(word) * 2) - reduce_score(index)
             return get_data_at_key(word.replace(char, "", 1)), score
     return [], 0
 
@@ -119,15 +108,16 @@ def add_missed_char(word):
     for index, char in enumerate(word):
         for i in ascii_lowercase:
             if word.replace(char, char + i, 1) in data.keys():
-                score = (10 - 2 * index) if index < 4 else 2
-                score = (len(word) * 2) - score
+                # score = (10 - 2 * index) if index < 4 else 2
+                # score = (len(word) * 2) - score
+                score = (len(word) * 2) - reduce_score(index)
                 return get_data_at_key(word.replace(char, char + i, 1)), score
     return [], 0
 
 
 class AutoCompleteData:
     def __init__(self, text_input):
-        self.completed_sentence = text_input
+        self.completed_sentence = get_data_at_key(text_input)
         self.source_text = ""
         self.offset = 0
         self.score = get_sentence_score(text_input)
@@ -163,5 +153,6 @@ class AutoCompleteData:
 # print_data(t)
 # print_data(data)
 init_data()
-a = AutoCompleteData("j")
-print(a.score)
+a = AutoCompleteData("ello")
+print(a.completed_sentence)
+# print(find_complete_sentence("hello"))
