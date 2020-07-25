@@ -70,16 +70,14 @@ def get_five_best_sentences(sub_str):
     if len(best_sentences) >= 5:
         return best_sentences[:5]
     else:
-        for i in replace_char(sub_str)[0]:
+        for i in replace_char(sub_str):
             best_sen[i] = i.score
-        for i in delete_unnecessary_char(sub_str)[0]:
+        for i in delete_unnecessary_char(sub_str):
             best_sen[i] = i.score
-        for i in add_missed_char(sub_str)[0]:
+        for i in add_missed_char(sub_str):
             best_sen[i] = i.score
         a = set(sorted(best_sen, key=best_sen.get, reverse=True))
         a = set(best_sentences).union(a)
-        for item in list(a):
-            print(item.score)
         return list(a)[:5]
 
 
@@ -100,12 +98,12 @@ def replace_char(word):
             if word.replace(char, i, 1) in data.keys():
                 score = (5 - index) if index < 5 else 1
                 score = (len(word) * 2) - score
+                result = get_data_at_key(word.replace(char, i, 1))
                 for item in result:
                     if item not in best_sen:
                         item.score = score
                 return result
-                # return get_data_at_key(word.replace(char, i, 1)), score
-    # return [], 0
+    return []
 
 
 def delete_unnecessary_char(word):
@@ -113,8 +111,12 @@ def delete_unnecessary_char(word):
         if word.replace(char, "", 1) in data.keys():
             score = (10 - 2 * index) if index < 4 else 2
             score = (len(word) * 2) - score
-            return get_data_at_key(word.replace(char, "", 1)), score
-    return [], 0
+            result = get_data_at_key(word.replace(char, "", 1))
+            for item in result:
+                if item not in best_sen:
+                    item.score = score
+            return result
+    return []
 
 
 def add_missed_char(word):
@@ -123,8 +125,12 @@ def add_missed_char(word):
             if word.replace(char, char + i, 1) in data.keys():
                 score = (10 - 2 * index) if index < 4 else 2
                 score = (len(word) * 2) - score
-                return get_data_at_key(word.replace(char, char + i, 1)), score
-    return [], 0
+                result = get_data_at_key(word.replace(char, char + i, 1))
+                for item in result:
+                    if item not in best_sen:
+                        item.score = score
+                return result
+    return []
 
 
 if __name__ == '__main__':
