@@ -16,12 +16,16 @@ class AutoCompleteData:
         self.source_text = source_text
         self.offset = offset
         self.score = 0
+
     def get_completed_sentence(self):
         return self.completed_sentence
+
     def get_source_text(self):
         return self.source_text
+
     def get_offset(self):
         return self.offset
+
     def get_score(self):
         return self.score
 
@@ -134,5 +138,4 @@ if __name__ == '__main__':
         print(f"There are {i} suggestions:")
         for index, item in enumerate(result):
             print(f'{index + 1}. {item.get_completed_sentence()} ({item.get_source_text()} {item.get_offset()})')
-        print(text)
-        text = input()
+        text = input(text)
