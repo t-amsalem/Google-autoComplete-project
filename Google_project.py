@@ -1,3 +1,4 @@
+import string
 from itertools import combinations
 from collections import defaultdict
 from string import ascii_lowercase
@@ -64,19 +65,23 @@ def get_data_at_key(key):
 
 
 def get_five_best_sentences(sub_str):
+    best_sen = {}
     best_sentences = get_data_at_key(sub_str)
     for item in best_sentences:
         item.score = 2 * len(sub_str)
     if len(best_sentences) >= 5:
         return best_sentences[:5]
     else:
-        for i in replace_char(sub_str):
+        result = replace_char(sub_str)
+        for i in result:
             best_sen[i] = i.score
-        for i in delete_unnecessary_char(sub_str):
+        result = delete_unnecessary_char(sub_str)
+        for i in result:
             best_sen[i] = i.score
-        for i in add_missed_char(sub_str):
+        result = add_missed_char(sub_str)
+        for i in result:
             best_sen[i] = i.score
-        a = set(sorted(best_sen, key=best_sen.get, reverse=True))
+        a = set(sorted(best_sen, key=best_sen.get, reverse=False))
         a = set(best_sentences).union(a)
         return list(a)[:5]
 
@@ -95,26 +100,29 @@ def get_sentence_score(sentence):
 def replace_char(word):
     for index, char in enumerate(word):
         for letter in ascii_lowercase:
-            new_word = word[:index] + letter + word[index + 1:]
-            if new_word in data.keys():
-                score = (5 - index) if index < 5 else 1
-                score = (len(word) * 2) - score
-                result = get_data_at_key(new_word)
-                for item in result:
-                    if item not in best_sen:
-                        item.score = score
-                return result
+            if char != letter:
+                new_word = word[:index] + letter + word[index+1:]
+                if new_word in data.keys():
+                    score = (5 - index) if index < 5 else 1
+                    score = (len(word) * 2) - score
+                    result = get_data_at_key(new_word)
+                    for item in result:
+                        item.score = 0
+                        if item not in best_sen:
+                            item.score = score
+                    return result
     return []
 
 
 def delete_unnecessary_char(word):
-    for index, char in enumerate(word):
+    for index in range(1, len(word)-1):
         new_word = word[:index] + word[index + 1:]
         if new_word in data.keys():
             score = (10 - 2 * index) if index < 4 else 2
             score = (len(word) * 2) - score
             result = get_data_at_key(new_word)
             for item in result:
+                item.score = 0
                 if item not in best_sen:
                     item.score = score
             return result
@@ -123,13 +131,14 @@ def delete_unnecessary_char(word):
 
 def add_missed_char(word):
     for index, char in enumerate(word):
-        for letter in ascii_lowercase:
+        for letter in string.printable:
             new_word = word[:index] + letter + word[index:]
             if new_word in data.keys():
                 score = (10 - 2 * index) if index < 4 else 2
                 score = (len(word) * 2) - score
                 result = get_data_at_key(new_word)
                 for item in result:
+                    item.score = 0
                     if item not in best_sen:
                         item.score = score
                 return result
