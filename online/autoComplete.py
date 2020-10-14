@@ -1,7 +1,7 @@
 import string
 from collections import defaultdict
 from string import ascii_lowercase
-from online_.load import data_, sentences_
+from online.load import data_, sentences_
 
 best_sen = defaultdict(int)
 
@@ -16,7 +16,7 @@ def get_data_at_key(key):
 
 
 def get_five_best_sentences(sub_str):
-    best_sen = {}
+    best_sentences_dict = {}
     best_sentences = get_data_at_key(sub_str)
 
     for item in best_sentences:
@@ -29,17 +29,17 @@ def get_five_best_sentences(sub_str):
         result = replace_char(sub_str)
 
         for i in result:
-            best_sen[i] = i.score
+            best_sentences_dict[i] = i.score
         result = delete_unnecessary_char(sub_str)
 
         for i in result:
-            best_sen[i] = i.score
+            best_sentences_dict[i] = i.score
         result = add_missed_char(sub_str)
 
         for i in result:
-            best_sen[i] = i.score
+            best_sentences_dict[i] = i.score
 
-        a = set(sorted(best_sen, key=best_sen.get, reverse=False))
+        a = set(sorted(best_sentences_dict, key=best_sentences_dict.get, reverse=False))
         a = set(best_sentences).union(a)
 
         return list(a)[:5]
