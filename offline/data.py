@@ -3,7 +3,7 @@ import os
 import pickle
 from collections import defaultdict
 from itertools import combinations
-from .autoCompleteData import AutoCompleteData
+from offline.autoCompleteData import AutoCompleteData
 
 
 bad_chars = [';', ':', '-', '!', '*', ',', '$', '@']
@@ -16,7 +16,6 @@ class SetEncoder(json.JSONEncoder):
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
-
 
 
 def read_file():

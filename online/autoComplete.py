@@ -9,8 +9,9 @@ best_sen = defaultdict(int)
 def get_data_at_key(key):
     key = key.lower()
     sentences = []
-    for k in data_[key]:
-        sentences.append(sentences_[k])
+    if key in data_:
+        for k in data_[key]:
+            sentences.append(sentences_[k])
 
     return sentences
 
