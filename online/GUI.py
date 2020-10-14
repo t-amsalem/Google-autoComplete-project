@@ -1,6 +1,6 @@
 from tkinter import *
 
-from online_.autoComplete import get_best_k_completions
+from online.autoComplete import get_best_k_completions
 
 
 def on_enter(event):
