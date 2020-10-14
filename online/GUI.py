@@ -1,11 +1,6 @@
 from tkinter import *
 
-from autoComplete import get_best_k_completions
-from data import read_file, init_data
-
-print("Loading the files and preparing the system...")
-read_file()
-init_data()
+from online_.autoComplete import get_best_k_completions
 
 
 def on_enter(event):
@@ -38,17 +33,17 @@ def main_program():
 
     if fixed_prefix:
         clear()
-        suggestions = get_best_k_completions(prefix)  # why sent prefix and not fixed prefix??
+        suggestions = get_best_k_completions(prefix)
         num = len(suggestions)
         result += "\n ********************************************************* \n"
 
         if suggestions:
             result += f"There are {num} suggestion to \'{fixed_prefix}\': \n"
 
-            for index, item in enumerate(result):
+            for index, item in enumerate(suggestions):
                 result += f'{index + 1}. {item.get_completed_sentence()} ' \
                           f'({item.get_source_text()} ' \
-                          f'{item.get_offset()})'
+                          f'{item.get_offset()}) \n'
 
         else:
             result += "\tThere are no suggestions"
