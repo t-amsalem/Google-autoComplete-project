@@ -1,11 +1,5 @@
 from tkinter import *
-
 from online.autoComplete import get_best_k_completions
-
-
-def on_enter(event):
-    widget = event.widget
-    print(widget.get())
 
 
 def clear():
@@ -15,13 +9,22 @@ def clear():
 
 master = Tk()
 
-label = Label(master, text="The system is ready, Enter your text: ").pack(side=TOP)
+label = Label(master, text="The system is ready, Enter your text: ", fg='purple').pack(side=TOP)
 
 master.title("Auto - completions")
-e = Entry(master, width=20)
+e = Entry(master,
+          width=20,
+          background='lightgoldenrodyellow')
 
 e.pack()
-text = Text(master, width=100)
+
+
+text = Text(master,
+            width=100,
+            background='cornsilk',
+            fg='indigo')
+
+
 text.pack()
 
 
@@ -47,17 +50,32 @@ def main_program():
 
         else:
             result += "\tThere are no suggestions"
+
         result += "\n ********************************************************* \n "
         text.insert(INSERT, result)
         text.pack()
 
 
-search_button = Button(master, text="Search", command=main_program)
-search_button.pack(side=RIGHT)
+search_button = Button(master,
+                       text="Search",
+                       command=main_program,
+                       background='moccasin',
+                       foreground='purple',
+                       activebackground='pink',
+                       activeforeground='purple')
+
+search_button.pack(side=LEFT)
 
 
-close_button = Button(master, text="Close", command=master.quit)
-close_button.pack(side=LEFT)
+close_button = Button(master,
+                      text="Close",
+                      command=master.quit,
+                      background='moccasin',
+                      foreground='purple',
+                      activebackground='pink',
+                      activeforeground='purple')
+
+close_button.pack(side=RIGHT)
 
 
 mainloop()
