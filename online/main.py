@@ -1,5 +1,4 @@
-
-from online_.autoComplete import get_best_k_completions
+from online.autoComplete import get_best_k_completions
 
 
 if __name__ == '__main__':
@@ -15,5 +14,7 @@ if __name__ == '__main__':
             print(f'{index + 1}. {item.get_completed_sentence()} ({item.get_source_text()} {item.get_offset()})')
         print(text, end="")
         text += input()
+
+
 
 
